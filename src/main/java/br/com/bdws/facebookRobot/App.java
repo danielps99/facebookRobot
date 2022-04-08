@@ -1,19 +1,38 @@
 package br.com.bdws.facebookRobot;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import br.com.bdws.facebookRobot.dto.Comando;
+import br.com.bdws.facebookRobot.dto.ContaFacebook;
+import br.com.bdws.facebookRobot.service.DriverService;
+import br.com.bdws.facebookRobot.service.ReaderJsonService;
+import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class App {
+public class App implements ICommons {
 
-    private ChromeDriver driver;
+    private DriverService driverService = DriverService.get();
+    private ReaderJsonService readerJsonService = ReaderJsonService.get();
 
-    public void start() {
-        inicializarNavegador();
+    public void start(Comando comando) {
+        driverService.configurarDriver(comando);
+        ContaFacebook contaFacebook = readerJsonService.buscarContaFacebook();
+        logar(contaFacebook);
+        if (!Comando.SOMENTE_LOGAR.equals(comando)) {
+            decidirCurtirOuCompartilhar(contaFacebook);
+        }
     }
 
-    private void inicializarNavegador() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+    private void decidirCurtirOuCompartilhar(ContaFacebook conta) {
+        //CONTINUAR IMPLEMENTAÇÃO
+    }
+
+    private void logar(ContaFacebook conta) {
+        ChromeDriver driver = driverService.getDriver();
+        info("Conta escolhida: " + conta.getEmail());
         driver.get("https://www.facebook.com/");
+        digitar(driver.findElement(By.id("email")), conta.getEmail());
+        sleep(1);
+        digitar(driver.findElement(By.id("pass")), conta.getPasswd());
+        sleep(1);
+        driver.findElement(By.tagName("button")).click();
     }
 }
