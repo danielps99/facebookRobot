@@ -60,8 +60,8 @@ public interface ICommons {
         } catch (WebDriverException e) {
             println("----WebDriverException");
         } catch (Exception e) {
-            println("----exception.getClass().getName() -> " + exception.getClass().getName());
             error(exception.getMessage());
+            e.printStackTrace();
         }
     }
 

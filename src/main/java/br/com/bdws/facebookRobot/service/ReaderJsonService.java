@@ -1,5 +1,6 @@
 package br.com.bdws.facebookRobot.service;
 
+import br.com.bdws.facebookRobot.ICommons;
 import br.com.bdws.facebookRobot.dto.ContaFacebook;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -8,7 +9,7 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.IOException;
 
-public class ReaderJsonService {
+public class ReaderJsonService implements ICommons {
 
     private static ReaderJsonService single;
 
@@ -33,7 +34,7 @@ public class ReaderJsonService {
                 return mapper.readValue(fileChooser.getSelectedFile(), ContaFacebook.class);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
         return null;
     }
