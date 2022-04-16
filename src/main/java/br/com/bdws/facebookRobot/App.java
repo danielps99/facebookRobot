@@ -22,7 +22,9 @@ public class App implements ICommons {
     }
 
     private void decidirCurtirOuCompartilhar(ContaFacebook conta) {
-        //CONTINUAR IMPLEMENTAÇÃO
+        if (conta.getPaginas() != null) {
+            new Curtidor().start(conta.getPaginas());
+        }
     }
 
     private void logar(ContaFacebook conta) {
@@ -34,5 +36,6 @@ public class App implements ICommons {
         digitar(driver.findElement(By.id("pass")), conta.getPasswd());
         sleep(1);
         driver.findElement(By.tagName("button")).click();
+        sleep(30);
     }
 }
