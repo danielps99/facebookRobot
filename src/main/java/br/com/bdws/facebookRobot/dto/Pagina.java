@@ -6,15 +6,12 @@ public class Pagina {
 
     private String nome;
     private String url;
-    private String xpath;
+    private String publicacoesXpath;
+    private String curtirComentarCompartilharXpath;
     private List<String> palavrasAIgnorar;
     private List<String> naoCurtirPalavras;
     private List<String> palavrasPreferidas;
     private int index;
-
-//    public Paginas() {
-//        index = ControladorLoopService.getInstance().getProximoIndex();
-//    }
 
     public String getNome() {
         return nome;
@@ -32,12 +29,20 @@ public class Pagina {
         this.url = url;
     }
 
-    public String getXpath() {
-        return xpath;
+    public String getPublicacoesXpath() {
+        return publicacoesXpath;
     }
 
-    public void setXpath(String xpath) {
-        this.xpath = xpath;
+    public void setPublicacoesXpath(String publicacoesXpath) {
+        this.publicacoesXpath = publicacoesXpath;
+    }
+
+    public String getCurtirComentarCompartilharXpath() {
+        return curtirComentarCompartilharXpath;
+    }
+
+    public void setCurtirComentarCompartilharXpath(String curtirComentarCompartilharXpath) {
+        this.curtirComentarCompartilharXpath = curtirComentarCompartilharXpath;
     }
 
     public List<String> getPalavrasAIgnorar() {
