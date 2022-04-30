@@ -3,6 +3,7 @@ package br.com.bdws.facebookRobot;
 import br.com.bdws.facebookRobot.dto.Pagina;
 import br.com.bdws.facebookRobot.service.DriverService;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ public class Curtidor implements ICommons {
     private int indexAtual;
     private Pagina paginaAtual;
     private Integer posicaoAtual = 2;
+    private Integer posicaoAnterior = 0;
     private List<String> publicacoesCurtidas;
+    private boolean clicou;
 
     public void start(List<Pagina> paginas) {
         for (Pagina pagina : paginas) {
@@ -30,17 +33,24 @@ public class Curtidor implements ICommons {
     private void entrarNaPagina() {
         driverService.getDriver().get(paginaAtual.getUrl());
         info(paginaAtual.getUrl());
+        sleep(20);
+        info(paginaAtual.getUrl());
         publicacoesCurtidas = new ArrayList<>();
-        sleep(30);
     }
 
     private void percorrerPublicacoesECurtir() {
-        windowScrollToPosicaoAtual();
         List<WebElement> publicacoes = buscarPublicacoes();
         while (continuarPercorrendo(publicacoes)) {
             WebElement publicacao = publicacoes.get(indexAtual);
-            atualizarPosicaoAtual(publicacao);
-            validarECurtir(publicacao);
+            try {
+                validarECurtir(publicacao);
+                atualizarPosicaoAtual(publicacao);
+            } catch (StaleElementReferenceException e) {
+                error("publicacao index" + indexAtual + " - pos " + posicaoAtual);
+                error(e);
+            } catch (Exception e) {
+                error(e);
+            }
             indexAtual++;
         }
         percorrerPublicacoesECurtir();
@@ -59,7 +69,7 @@ public class Curtidor implements ICommons {
 
     private void windowScrollToPosicaoAtual() {
         driverService.getDriver().executeScript("window.scrollTo(0, " + posicaoAtual + ");");
-        sleep(15);
+        sleep(3);
     }
 
     private boolean continuarPercorrendo(List<WebElement> publicacoes) {
@@ -73,8 +83,9 @@ public class Curtidor implements ICommons {
                 return false;
             }
         }
-        return texto.contains("compartilhouumapublicação")
-                && texto.contains("curtircomentarcompartilhar")
+        return (texto.contains("compartilhouumapublicação")
+                || texto.contains("compartilhouumlink"))
+                && texto.contains("curtircomentar")
                 && !publicacoesCurtidas.contains(texto);
     }
 
@@ -86,13 +97,16 @@ public class Curtidor implements ICommons {
     }
 
     private List<WebElement> buscarPublicacoes() {
-        WebElement wePublicacoes = driverService.getDriver().findElement(By.xpath(paginaAtual.getPublicacoesXpath()));
-        return wePublicacoes.findElements(By.tagName("div"));
+        return driverService.getDriver().findElements(By.xpath(paginaAtual.getPublicacoesXpath()));
     }
 
     public void atualizarPosicaoAtual(WebElement webElement) {
         if (webElement.getLocation() != null && webElement.getLocation().getY() != 0) {
             posicaoAtual = webElement.getLocation().getY();
+            if (posicaoAtual > posicaoAnterior) {
+                posicaoAnterior = posicaoAtual;
+                windowScrollToPosicaoAtual();
+            }
         }
     }
 
@@ -102,13 +116,15 @@ public class Curtidor implements ICommons {
                         .split(System.lineSeparator())
         ).collect(Collectors.toList());
 
-        StringBuilder sb = new StringBuilder(posicaoAtual + " - ");
+        StringBuilder sb = new StringBuilder("ATITUDE:" + (clicou ? "CURTIU" : "PULOU"))
+                .append("_INDEX:" + indexAtual + "_POSIÇÃO:" + posicaoAtual + " - ");
         for (String linha : linhasTexto) {
             if (canMostarLinhaPublicacao(linha)) {
                 sb.append(linha.trim()).append(System.lineSeparator());
             }
         }
         info(sb.toString());
+        clicou = false;
     }
 
     private boolean canMostarLinhaPublicacao(String linha) {
@@ -117,8 +133,10 @@ public class Curtidor implements ICommons {
                 .replace("comentar", "")
                 .replace("compartilhar", "")
                 .replace("online", "")
-                .replace("Escreva um comentário público…", "")
-                .replace("Pressione Enter para publicar.", "")
+                .replace("ver tradução", "")
+                .replace("escreva um comentário…", "")
+                .replace("escreva um comentário público…", "")
+                .replace("pressione enter para publicar.", "")
                 .trim();
         return linhaLimpa.length() > 2;
     }
