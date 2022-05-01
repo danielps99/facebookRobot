@@ -1,9 +1,7 @@
 package br.com.bdws.facebookRobot;
 
 import com.google.common.base.Strings;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriverException;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,18 +49,8 @@ public interface ICommons {
     }
 
     public default void error(Exception exception) {
-        try {
-            throw exception;
-        } catch (StaleElementReferenceException e) {
-            println("----StaleElementReferenceException");
-        } catch (ElementClickInterceptedException e) {
-            println("----ElementClickInterceptedException");
-        } catch (WebDriverException e) {
-            println("----WebDriverException");
-        } catch (Exception e) {
-            error(exception.getMessage());
-            e.printStackTrace();
-        }
+        String stackTrace = ExceptionUtils.getStackTrace(exception);
+        error(exception.getClass().getName() + System.lineSeparator() + stackTrace);
     }
 
     public default void error(String error) {
