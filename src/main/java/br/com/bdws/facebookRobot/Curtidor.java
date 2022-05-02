@@ -51,9 +51,30 @@ public class Curtidor implements ICommons {
 
     private void validarConteudoECurtir() {
         if (hasConteudoParaCurtir()) {
-//            clicou = validarEClicarNoCurtir();
+            clicou = validarEClicarNoCurtir();
             formatarEImprimirPublicacao();
         }
+    }
+
+    private boolean validarEClicarNoCurtir() {
+        WebElement curtirBtn = getBtnCurtir();
+        if (curtirBtn != null) {
+            driverService.waitUntilBeClickable(curtirBtn);
+            curtirBtn.click();
+            adicionarStringsPublicacoesCurtidas();
+            return true;
+        }
+        return false;
+    }
+
+    public WebElement getBtnCurtir() {
+        return getPublicacaoAtual()
+                .findElements(By.tagName("div"))
+                .stream()
+                .filter(d ->
+                        d.getText().equalsIgnoreCase("curtir") && d.getAttribute("aria-label") != null && d.getAttribute("aria-label").equalsIgnoreCase("curtir")
+                ).findFirst()
+                .orElse(null);
     }
 
     private void adicionarStringsPublicacoesCurtidas() {
