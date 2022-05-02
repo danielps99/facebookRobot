@@ -56,4 +56,13 @@ public interface ICommons {
     public default void error(String error) {
         logger.error(error);
     }
+
+    public default void errorComMensagem(Exception exception, String mensagem) {
+        String stackTrace = ExceptionUtils.getStackTrace(exception);
+        error(mensagem +
+                System.lineSeparator() +
+                exception.getClass().getName() +
+                System.lineSeparator() +
+                stackTrace);
+    }
 }
