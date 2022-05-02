@@ -3,7 +3,6 @@ package br.com.bdws.facebookRobot;
 import br.com.bdws.facebookRobot.dto.Pagina;
 import br.com.bdws.facebookRobot.service.DriverService;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -39,32 +38,26 @@ public class Curtidor implements ICommons {
     }
 
     private void percorrerPublicacoesECurtir() {
-        List<WebElement> publicacoes = buscarPublicacoes();
-        while (continuarPercorrendo(publicacoes)) {
-            WebElement publicacao = publicacoes.get(indexAtual);
-            try {
-                validarECurtir(publicacao);
-                atualizarPosicaoAtual(publicacao);
-            } catch (StaleElementReferenceException e) {
-                error("publicacao index" + indexAtual + " - pos " + posicaoAtual);
-                error(e);
-            } catch (Exception e) {
-                error(e);
-            }
-            indexAtual++;
+        sleep(30);
+        try {
+            validarConteudoECurtir();
+            atualizarPosicaoAtual();
+        } catch (Exception e) {
+            errorComMensagem(e, "INDEX:" + indexAtual + "_POSIÇÃO:" + posicaoAtual);
         }
+        indexAtual++;
         percorrerPublicacoesECurtir();
     }
 
-    private void validarECurtir(WebElement publicacao) {
-        if (canCurtir(publicacao)) {
-            adicionarStringsPublicacoesCurtidas(publicacao);
-            formatarEMostarPublicacaoCurtida(publicacao);
+    private void validarConteudoECurtir() {
+        if (hasConteudoParaCurtir()) {
+//            clicou = validarEClicarNoCurtir();
+            formatarEImprimirPublicacao();
         }
     }
 
-    private void adicionarStringsPublicacoesCurtidas(WebElement publicacao) {
-        publicacoesCurtidas.add(getTextoSemEspacoLowerCase(publicacao));
+    private void adicionarStringsPublicacoesCurtidas() {
+        publicacoesCurtidas.add(getTextoSemEspacoLowerCase());
     }
 
     private void windowScrollToPosicaoAtual() {
@@ -72,12 +65,8 @@ public class Curtidor implements ICommons {
         sleep(3);
     }
 
-    private boolean continuarPercorrendo(List<WebElement> publicacoes) {
-        return indexAtual < publicacoes.size();
-    }
-
-    private boolean canCurtir(WebElement publicacao) {
-        String texto = getTextoSemEspacoLowerCase(publicacao);
+    private boolean hasConteudoParaCurtir() {
+        String texto = getTextoSemEspacoLowerCase();
         for (String naoCurtirTexto : paginaAtual.getNaoCurtirPalavras()) {
             if (texto.contains(naoCurtirTexto)) {
                 return false;
@@ -89,18 +78,21 @@ public class Curtidor implements ICommons {
                 && !publicacoesCurtidas.contains(texto);
     }
 
-    private String getTextoSemEspacoLowerCase(WebElement webElement) {
-        return webElement.getText()
+    private String getTextoSemEspacoLowerCase() {
+        return getPublicacaoAtual().getText()
                 .replace(System.lineSeparator(), "")
                 .replace(" ", "")
                 .toLowerCase();
     }
 
-    private List<WebElement> buscarPublicacoes() {
-        return driverService.getDriver().findElements(By.xpath(paginaAtual.getPublicacoesXpath()));
+    private WebElement getPublicacaoAtual() {
+        return driverService.getDriver()
+                .findElements(By.xpath(paginaAtual.getPublicacoesXpath()))
+                .get(indexAtual);
     }
 
-    public void atualizarPosicaoAtual(WebElement webElement) {
+    public void atualizarPosicaoAtual() {
+        WebElement webElement = getPublicacaoAtual();
         if (webElement.getLocation() != null && webElement.getLocation().getY() != 0) {
             posicaoAtual = webElement.getLocation().getY();
             if (posicaoAtual > posicaoAnterior) {
@@ -110,10 +102,9 @@ public class Curtidor implements ICommons {
         }
     }
 
-    private void formatarEMostarPublicacaoCurtida(WebElement publicacao) {
+    private void formatarEImprimirPublicacao() {
         List<String> linhasTexto = Arrays.stream(
-                publicacao.getText()
-                        .split(System.lineSeparator())
+                getPublicacaoAtual().getText().split(System.lineSeparator())
         ).collect(Collectors.toList());
 
         StringBuilder sb = new StringBuilder("ATITUDE:" + (clicou ? "CURTIU" : "PULOU"))
@@ -124,7 +115,6 @@ public class Curtidor implements ICommons {
             }
         }
         info(sb.toString());
-        clicou = false;
     }
 
     private boolean canMostarLinhaPublicacao(String linha) {
