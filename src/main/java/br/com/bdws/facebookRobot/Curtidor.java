@@ -5,7 +5,6 @@ import br.com.bdws.facebookRobot.service.DriverService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,30 +14,33 @@ public class Curtidor implements ICommons {
     private DriverService driverService = DriverService.get();
     private int indexAtual;
     private Pagina paginaAtual;
-    private Integer posicaoAtual = 2;
-    private Integer posicaoAnterior = 0;
-    private List<String> publicacoesCurtidas;
+    private Integer posicaoAtual;
+    private Integer posicaoAnterior;
     private boolean clicou;
 
     public void start(List<Pagina> paginas) {
         for (Pagina pagina : paginas) {
             paginaAtual = pagina;
+            inicializarVariaveis();
             entrarNaPagina();
-            indexAtual = 0;
             percorrerPublicacoesECurtir();
         }
     }
 
+    private void inicializarVariaveis() {
+        indexAtual = 0;
+        posicaoAtual = 1;
+        posicaoAnterior = 0;
+    }
+
     private void entrarNaPagina() {
         driverService.getDriver().get(paginaAtual.getUrl());
-        info(paginaAtual.getUrl());
         sleep(20);
         info(paginaAtual.getUrl());
-        publicacoesCurtidas = new ArrayList<>();
     }
 
     private void percorrerPublicacoesECurtir() {
-        sleep(30);
+        sleep(40);
         try {
             validarConteudoECurtir();
             atualizarPosicaoAtual();
@@ -61,7 +63,6 @@ public class Curtidor implements ICommons {
         if (curtirBtn != null) {
             driverService.waitUntilBeClickable(curtirBtn);
             curtirBtn.click();
-            adicionarStringsPublicacoesCurtidas();
             return true;
         }
         return false;
@@ -75,10 +76,6 @@ public class Curtidor implements ICommons {
                         d.getText().equalsIgnoreCase("curtir") && d.getAttribute("aria-label") != null && d.getAttribute("aria-label").equalsIgnoreCase("curtir")
                 ).findFirst()
                 .orElse(null);
-    }
-
-    private void adicionarStringsPublicacoesCurtidas() {
-        publicacoesCurtidas.add(getTextoSemEspacoLowerCase());
     }
 
     private void windowScrollToPosicaoAtual() {
@@ -95,8 +92,7 @@ public class Curtidor implements ICommons {
         }
         return (texto.contains("compartilhouumapublicação")
                 || texto.contains("compartilhouumlink"))
-                && texto.contains("curtircomentar")
-                && !publicacoesCurtidas.contains(texto);
+                && texto.contains("curtircomentar");
     }
 
     private String getTextoSemEspacoLowerCase() {
