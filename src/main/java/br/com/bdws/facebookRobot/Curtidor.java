@@ -23,6 +23,7 @@ public class Curtidor implements ICommons {
     private Integer posicaoAtual;
     private Integer posicaoAnterior;
     private boolean clicou;
+    private int contadorPararDeCurtir;
 
     public void start(List<Pagina> paginas) {
         for (Pagina pagina : paginas) {
@@ -37,6 +38,7 @@ public class Curtidor implements ICommons {
         indexAtual = 0;
         posicaoAtual = 1;
         posicaoAnterior = 0;
+        contadorPararDeCurtir = 0;
     }
 
     private void entrarNaPagina() {
@@ -52,9 +54,12 @@ public class Curtidor implements ICommons {
             atualizarPosicaoAtual();
         } catch (Exception e) {
             errorComMensagem(e, "INDEX:" + indexAtual + "_POSIÇÃO:" + posicaoAtual);
+            contadorPararDeCurtir++;
         }
-        indexAtual++;
-        percorrerPublicacoesECurtir();
+        if (contadorPararDeCurtir < 10) {
+            indexAtual++;
+            percorrerPublicacoesECurtir();
+        }
     }
 
     private void validarConteudoECurtir() {
@@ -72,6 +77,7 @@ public class Curtidor implements ICommons {
             tirarPrintScreen();
             return true;
         }
+        contadorPararDeCurtir++;
         return false;
     }
 
@@ -82,21 +88,6 @@ public class Curtidor implements ICommons {
         } catch (IOException e) {
             errorComMensagem(e, "takesScreenshot");
         }
-    }
-
-    private String getNomeArquivoScreenshot() {
-        return new StringBuilder()
-                .append(userHomeFolder)
-                .append("/Curtidor/")
-                .append(getDiaHoraMinutoSegundo())
-                .append("_")
-                .append(getSomenteLetrasENumeros(paginaAtual.getNome()))
-                .append("_")
-                .append(indexAtual)
-                .append("_")
-                .append(posicaoAtual)
-                .append(".png")
-                .toString();
     }
 
     public WebElement getBtnCurtir() {
@@ -126,13 +117,6 @@ public class Curtidor implements ICommons {
                 && texto.contains("curtircomentar");
     }
 
-    private String getTextoSemEspacoLowerCase() {
-        return getPublicacaoAtual().getText()
-                .replace(System.lineSeparator(), "")
-                .replace(" ", "")
-                .toLowerCase();
-    }
-
     private WebElement getPublicacaoAtual() {
         return driverService.getDriver()
                 .findElements(By.xpath(paginaAtual.getPublicacoesXpath()))
@@ -155,14 +139,47 @@ public class Curtidor implements ICommons {
                 getPublicacaoAtual().getText().split(System.lineSeparator())
         ).collect(Collectors.toList());
 
-        StringBuilder sb = new StringBuilder("ATITUDE:" + (clicou ? "CURTIU" : "PULOU"))
-                .append("_INDEX:" + indexAtual + "_POSIÇÃO:" + posicaoAtual + " - ");
+        StringBuilder sb = getInicioLinhaPublicacao();
         for (String linha : linhasTexto) {
             if (canMostarLinhaPublicacao(linha)) {
                 sb.append(linha.trim()).append(System.lineSeparator());
             }
         }
         info(sb.toString());
+    }
+
+    private String getTextoSemEspacoLowerCase() {
+        return getPublicacaoAtual().getText()
+                .replace(System.lineSeparator(), "")
+                .replace(" ", "")
+                .toLowerCase();
+    }
+    
+    private String getNomeArquivoScreenshot() {
+        return new StringBuilder()
+                .append(userHomeFolder)
+                .append("/Curtidor/")
+                .append(getDiaHoraMinutoSegundo())
+                .append("_")
+                .append(getSomenteLetrasENumeros(paginaAtual.getNome()))
+                .append("_")
+                .append(indexAtual)
+                .append("_")
+                .append(posicaoAtual)
+                .append(".png")
+                .toString();
+    }
+
+    private StringBuilder getInicioLinhaPublicacao() {
+        return new StringBuilder("ATITUDE:")
+                .append(clicou ? "CURTIU" : "PULOU")
+                .append("_INDEX:")
+                .append(indexAtual)
+                .append("_POSIÇÃO:")
+                .append(posicaoAtual)
+                .append("_PARARDECURTIR:")
+                .append(contadorPararDeCurtir)
+                .append(" - ");
     }
 
     private boolean canMostarLinhaPublicacao(String linha) {
