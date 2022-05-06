@@ -6,6 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public interface ICommons {
@@ -64,5 +66,17 @@ public interface ICommons {
                 exception.getClass().getName() +
                 System.lineSeparator() +
                 stackTrace);
+    }
+
+    public default String getSomenteLetrasENumeros(String texto) {
+        return texto.replaceAll("[^a-zA-Z0-9]", "");
+    }
+
+    public default String getDiaHoraMinutoSegundo() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_HHmmss"));
+    }
+
+    public default String getUserHomeFolder() {
+        return System.getProperty("user.home");
     }
 }

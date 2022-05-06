@@ -2,15 +2,21 @@ package br.com.bdws.facebookRobot;
 
 import br.com.bdws.facebookRobot.dto.Pagina;
 import br.com.bdws.facebookRobot.service.DriverService;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Curtidor implements ICommons {
 
+    private final String userHomeFolder = getUserHomeFolder();
     private DriverService driverService = DriverService.get();
     private int indexAtual;
     private Pagina paginaAtual;
@@ -63,9 +69,34 @@ public class Curtidor implements ICommons {
         if (curtirBtn != null) {
             driverService.waitUntilBeClickable(curtirBtn);
             curtirBtn.click();
+            tirarPrintScreen();
             return true;
         }
         return false;
+    }
+
+    private void tirarPrintScreen() {
+        File scrFile = ((TakesScreenshot) driverService.getDriver()).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(scrFile, new File(getNomeArquivoScreenshot()));
+        } catch (IOException e) {
+            errorComMensagem(e, "takesScreenshot");
+        }
+    }
+
+    private String getNomeArquivoScreenshot() {
+        return new StringBuilder()
+                .append(userHomeFolder)
+                .append("/Curtidor/")
+                .append(getDiaHoraMinutoSegundo())
+                .append("_")
+                .append(getSomenteLetrasENumeros(paginaAtual.getNome()))
+                .append("_")
+                .append(indexAtual)
+                .append("_")
+                .append(posicaoAtual)
+                .append(".png")
+                .toString();
     }
 
     public WebElement getBtnCurtir() {
