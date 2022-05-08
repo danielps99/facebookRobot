@@ -53,7 +53,7 @@ public class Curtidor implements ICommons {
             validarConteudoECurtir();
             atualizarPosicaoAtual();
         } catch (Exception e) {
-            errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual));
+            errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
             contadorPararDeCurtir++;
         }
         if (contadorPararDeCurtir < 10) {

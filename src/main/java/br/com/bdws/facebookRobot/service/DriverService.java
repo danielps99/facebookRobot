@@ -42,6 +42,7 @@ public class DriverService {
         if (driver == null) {
             WebDriverManager.chromedriver().setup();
             driver = new ChromeDriver(options);
+            driver.manage().window().maximize();
         }
         return driver;
     }
