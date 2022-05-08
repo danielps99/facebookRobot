@@ -44,7 +44,7 @@ public class Curtidor implements ICommons {
     private void entrarNaPagina() {
         driverService.getDriver().get(paginaAtual.getUrl());
         sleep(20);
-        info(paginaAtual.getUrl());
+        info(paginaAtual.toString());
     }
 
     private void percorrerPublicacoesECurtir() {

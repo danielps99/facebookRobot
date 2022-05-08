@@ -79,6 +79,12 @@ public interface ICommons {
         return System.getProperty("user.home");
     }
 
+    public default String concat(String... strs) {
+        String str = "";
+        Arrays.stream(strs).forEach(s -> str.concat(s));
+        return str;
+    }
+
     public default String concat(Object... args) {
         return concatSb(args).toString();
     }

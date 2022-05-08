@@ -7,11 +7,7 @@ public class Pagina {
     private String nome;
     private String url;
     private String publicacoesXpath;
-    private String curtirComentarCompartilharXpath;
-    private List<String> palavrasAIgnorar;
     private List<String> naoCurtirPalavras;
-    private List<String> palavrasPreferidas;
-    private int index;
 
     public String getNome() {
         return nome;
@@ -37,22 +33,6 @@ public class Pagina {
         this.publicacoesXpath = publicacoesXpath;
     }
 
-    public String getCurtirComentarCompartilharXpath() {
-        return curtirComentarCompartilharXpath;
-    }
-
-    public void setCurtirComentarCompartilharXpath(String curtirComentarCompartilharXpath) {
-        this.curtirComentarCompartilharXpath = curtirComentarCompartilharXpath;
-    }
-
-    public List<String> getPalavrasAIgnorar() {
-        return palavrasAIgnorar;
-    }
-
-    public void setPalavrasAIgnorar(List<String> palavrasAIgnorar) {
-        this.palavrasAIgnorar = palavrasAIgnorar;
-    }
-
     public List<String> getNaoCurtirPalavras() {
         return naoCurtirPalavras;
     }
@@ -61,16 +41,8 @@ public class Pagina {
         this.naoCurtirPalavras = naoCurtirPalavras;
     }
 
-    public List<String> getPalavrasPreferidas() {
-        return palavrasPreferidas;
-    }
-
-    public void setPalavrasPreferidas(List<String> palavrasPreferidas) {
-        this.palavrasPreferidas = palavrasPreferidas;
-    }
-
     @Override
     public String toString() {
-        return index + " - " + nome + " - " + url;
+        return "Página: ".concat(nome).concat(" - ").concat(url);
     }
 }
