@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Random;
+
+import static java.lang.System.lineSeparator;
 
 public interface ICommons {
 
@@ -52,7 +55,7 @@ public interface ICommons {
 
     public default void error(Exception exception) {
         String stackTrace = ExceptionUtils.getStackTrace(exception);
-        error(exception.getClass().getName() + System.lineSeparator() + stackTrace);
+        error(exception.getClass().getName() + lineSeparator() + stackTrace);
     }
 
     public default void error(String error) {
@@ -61,11 +64,7 @@ public interface ICommons {
 
     public default void errorComMensagem(Exception exception, String mensagem) {
         String stackTrace = ExceptionUtils.getStackTrace(exception);
-        error(mensagem +
-                System.lineSeparator() +
-                exception.getClass().getName() +
-                System.lineSeparator() +
-                stackTrace);
+        error(concat(mensagem, lineSeparator(), exception.getClass().getName(), lineSeparator(), stackTrace));
     }
 
     public default String getSomenteLetrasENumeros(String texto) {
@@ -78,5 +77,15 @@ public interface ICommons {
 
     public default String getUserHomeFolder() {
         return System.getProperty("user.home");
+    }
+
+    public default String concat(Object... args) {
+        return concatSb(args).toString();
+    }
+
+    public default StringBuilder concatSb(Object... args) {
+        StringBuilder sb = new StringBuilder();
+        Arrays.stream(args).forEach(a -> sb.append(a));
+        return sb;
     }
 }

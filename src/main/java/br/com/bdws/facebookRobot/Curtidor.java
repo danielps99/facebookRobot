@@ -53,7 +53,7 @@ public class Curtidor implements ICommons {
             validarConteudoECurtir();
             atualizarPosicaoAtual();
         } catch (Exception e) {
-            errorComMensagem(e, "INDEX:" + indexAtual + "_POSIÇÃO:" + posicaoAtual);
+            errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual));
             contadorPararDeCurtir++;
         }
         if (contadorPararDeCurtir < 10) {
@@ -154,32 +154,15 @@ public class Curtidor implements ICommons {
                 .replace(" ", "")
                 .toLowerCase();
     }
-    
+
     private String getNomeArquivoScreenshot() {
-        return new StringBuilder()
-                .append(userHomeFolder)
-                .append("/Curtidor/")
-                .append(getDiaHoraMinutoSegundo())
-                .append("_")
-                .append(getSomenteLetrasENumeros(paginaAtual.getNome()))
-                .append("_")
-                .append(indexAtual)
-                .append("_")
-                .append(posicaoAtual)
-                .append(".png")
-                .toString();
+        return concat(userHomeFolder, "/Curtidor/", getDiaHoraMinutoSegundo(), "_",
+                getSomenteLetrasENumeros(paginaAtual.getNome()), "_", indexAtual, "_", posicaoAtual, ".png");
     }
 
     private StringBuilder getInicioLinhaPublicacao() {
-        return new StringBuilder("ATITUDE:")
-                .append(clicou ? "CURTIU" : "PULOU")
-                .append("_INDEX:")
-                .append(indexAtual)
-                .append("_POSIÇÃO:")
-                .append(posicaoAtual)
-                .append("_PARARDECURTIR:")
-                .append(contadorPararDeCurtir)
-                .append(" - ");
+        return concatSb("ATITUDE:", clicou ? "CURTIU" : "PULOU", "_INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual,
+                "_PARARDECURTIR:", contadorPararDeCurtir, " - ");
     }
 
     private boolean canMostarLinhaPublicacao(String linha) {
