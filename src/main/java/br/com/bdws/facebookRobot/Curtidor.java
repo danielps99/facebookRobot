@@ -112,9 +112,7 @@ public class Curtidor implements ICommons {
                 return false;
             }
         }
-        return (texto.contains("compartilhouumapublicação")
-                || texto.contains("compartilhouumlink"))
-                && texto.contains("curtircomentar");
+        return texto.contains("curtircomentar");
     }
 
     private WebElement getPublicacaoAtual() {
