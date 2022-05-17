@@ -24,9 +24,14 @@ public class Curtidor implements ICommons {
     private Integer posicaoAnterior;
     private boolean clicou;
     private int contadorPararDeCurtir;
+    private int contadorExceptions = 0;
+    private int contadorCurtidas;
 
     public void start(List<Pagina> paginas) {
         for (Pagina pagina : paginas) {
+            if (!continuarRobo()) {
+                break;
+            }
             paginaAtual = pagina;
             inicializarVariaveis();
             entrarNaPagina();
@@ -39,6 +44,7 @@ public class Curtidor implements ICommons {
         posicaoAtual = 1;
         posicaoAnterior = 0;
         contadorPararDeCurtir = 0;
+        contadorCurtidas = 0;
     }
 
     private void entrarNaPagina() {
@@ -54,12 +60,16 @@ public class Curtidor implements ICommons {
             atualizarPosicaoAtual();
         } catch (Exception e) {
             errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
-            contadorPararDeCurtir++;
+            contadorExceptions++;
         }
-        if (contadorPararDeCurtir < 10) {
+        if (contadorPararDeCurtir < 10 && continuarRobo() && contadorCurtidas < 50) {
             indexAtual++;
             percorrerPublicacoesECurtir();
         }
+    }
+
+    private boolean continuarRobo() {
+        return contadorExceptions < 3;
     }
 
     private void validarConteudoECurtir() {
@@ -75,6 +85,7 @@ public class Curtidor implements ICommons {
             driverService.waitUntilBeClickable(curtirBtn);
             curtirBtn.click();
             tirarPrintScreen();
+            contadorCurtidas++;
             return true;
         }
         contadorPararDeCurtir++;
