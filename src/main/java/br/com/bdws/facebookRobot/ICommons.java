@@ -81,7 +81,9 @@ public interface ICommons {
 
     public default String concat(String... strs) {
         String str = "";
-        Arrays.stream(strs).forEach(s -> str.concat(s));
+        for (String s : strs) {
+            str = str.concat(s);
+        }
         return str;
     }
 
