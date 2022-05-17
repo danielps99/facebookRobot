@@ -61,6 +61,7 @@ public class Curtidor implements ICommons {
         } catch (Exception e) {
             errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
             contadorExceptions++;
+            tirarPrintScreen(concat(userHomeFolder, "/Curtidor/exception/", getDiaHoraMinutoSegundo(), ".png"));
         }
         if (contadorPararDeCurtir < 10 && continuarRobo() && contadorCurtidas < 50) {
             indexAtual++;
@@ -84,7 +85,7 @@ public class Curtidor implements ICommons {
         if (curtirBtn != null) {
             driverService.waitUntilBeClickable(curtirBtn);
             curtirBtn.click();
-            tirarPrintScreen();
+            tirarPrintScreen(getNomeArquivoScreenshot());
             contadorCurtidas++;
             return true;
         }
@@ -92,10 +93,10 @@ public class Curtidor implements ICommons {
         return false;
     }
 
-    private void tirarPrintScreen() {
+    private void tirarPrintScreen(String pathAndNomeArquivo) {
         File scrFile = ((TakesScreenshot) driverService.getDriver()).getScreenshotAs(OutputType.FILE);
         try {
-            FileUtils.copyFile(scrFile, new File(getNomeArquivoScreenshot()));
+            FileUtils.copyFile(scrFile, new File(pathAndNomeArquivo));
         } catch (IOException e) {
             errorComMensagem(e, "takesScreenshot");
         }
