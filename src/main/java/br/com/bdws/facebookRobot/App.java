@@ -12,9 +12,12 @@ public class App implements ICommons {
     private DriverService driverService = DriverService.get();
     private ReaderJsonService readerJsonService = ReaderJsonService.get();
 
-    public void start(Comando comando) {
+    public void start(Comando comando, String arquivoConta) {
+        ContaFacebook contaFacebook = readerJsonService.buscarContaFacebook(arquivoConta);
+        if (contaFacebook == null) {
+            return;
+        }
         driverService.configurarDriver(comando);
-        ContaFacebook contaFacebook = readerJsonService.buscarContaFacebook();
         logar(contaFacebook);
         if (!Comando.SOMENTE_LOGAR.equals(comando)) {
             decidirCurtirOuCompartilhar(contaFacebook);

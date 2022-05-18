@@ -23,18 +23,30 @@ public class ReaderJsonService implements ICommons {
         return single;
     }
 
-    public ContaFacebook buscarContaFacebook() {
+    public ContaFacebook buscarContaFacebook(String arquivoConta) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            JFileChooser fileChooser = new JFileChooser();
-            configurarJFileChooser(fileChooser);
-            int result = fileChooser.showOpenDialog(null);
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-                return mapper.readValue(fileChooser.getSelectedFile(), ContaFacebook.class);
+            File fileConta = null;
+            if (arquivoConta.isEmpty()) {
+                fileConta = getFileFromFileChooser();
+            } else {
+                fileConta = new File("./".concat(arquivoConta));
             }
+            return mapper.readValue(fileConta, ContaFacebook.class);
         } catch (IOException e) {
             error(e);
+        } finally {
+            return null;
+        }
+    }
+
+    private File getFileFromFileChooser() {
+        JFileChooser fileChooser = new JFileChooser();
+        configurarJFileChooser(fileChooser);
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
         }
         return null;
     }
