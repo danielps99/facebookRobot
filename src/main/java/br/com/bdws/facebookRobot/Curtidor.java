@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,28 @@ public class Curtidor implements ICommons {
             entrarNaPagina();
             percorrerPublicacoesECurtir();
         }
+    }
+
+    private List<Pagina> reordenar(List<Pagina> paginas, String urlPrimeiraPagina) {
+        paginas.stream().forEach(pagina -> {
+            System.out.println(pagina);
+        });
+        List<Pagina> primeiras = new ArrayList<>();
+        List<Pagina> ultimas = new ArrayList<>();
+        boolean encontrouPrimeira = false;
+        for (Pagina pagina : paginas) {
+            if (!encontrouPrimeira && urlPrimeiraPagina.equalsIgnoreCase(pagina.getUrl())) {
+                encontrouPrimeira = true;
+            }
+            if (encontrouPrimeira) {
+                primeiras.add(pagina);
+            } else {
+                ultimas.add(pagina);
+            }
+        }
+        System.out.println("DEPOIS");
+        primeiras.addAll(ultimas);
+        return primeiras;
     }
 
     private void inicializarVariaveis() {
