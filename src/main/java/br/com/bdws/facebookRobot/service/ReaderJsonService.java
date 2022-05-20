@@ -35,7 +35,6 @@ public class ReaderJsonService implements ICommons {
             return mapper.readValue(fileConta, ContaFacebook.class);
         } catch (IOException e) {
             error(e);
-        } finally {
             return null;
         }
     }
