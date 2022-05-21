@@ -1,6 +1,9 @@
 package br.com.bdws.facebookRobot;
 
+import br.com.bdws.facebookRobot.dao.IntermediadorDadosDao;
+import br.com.bdws.facebookRobot.dto.ContaFacebook;
 import br.com.bdws.facebookRobot.dto.Pagina;
+import br.com.bdws.facebookRobot.dto.PaginaCurtidaDto;
 import br.com.bdws.facebookRobot.service.DriverService;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -19,6 +22,7 @@ public class Curtidor implements ICommons {
 
     private final String userHomeFolder = getUserHomeFolder();
     private DriverService driverService = DriverService.get();
+    private IntermediadorDadosDao dao = new IntermediadorDadosDao();
     private int indexAtual;
     private Pagina paginaAtual;
     private Integer posicaoAtual;
@@ -27,23 +31,41 @@ public class Curtidor implements ICommons {
     private int contadorPararDeCurtir;
     private int contadorExceptions = 0;
     private int contadorCurtidas;
+    private List<Pagina> paginas;
 
-    public void start(List<Pagina> paginas) {
+    public void start(ContaFacebook conta) {
+        int paginaEmAndamentoId = recuperarPaginaEmAndamentoEReordenarPaginas(conta);
         for (Pagina pagina : paginas) {
             if (!continuarRobo()) {
                 break;
             }
-            paginaAtual = pagina;
-            inicializarVariaveis();
+            paginaEmAndamentoId = inserirSeNaoForPaginaEmAndamento(conta, paginaEmAndamentoId, pagina);
+            inicializarVariaveis(pagina);
             entrarNaPagina();
             percorrerPublicacoesECurtir();
+            dao.finalizarPaginaCurtida(paginaEmAndamentoId, contadorCurtidas, contadorPararDeCurtir);
+            paginaEmAndamentoId = 0;
         }
     }
 
-    private List<Pagina> reordenar(List<Pagina> paginas, String urlPrimeiraPagina) {
-        paginas.stream().forEach(pagina -> {
-            System.out.println(pagina);
-        });
+    private int inserirSeNaoForPaginaEmAndamento(ContaFacebook conta, int paginaEmAndamentoId, Pagina pagina) {
+        if (paginaEmAndamentoId == 0) {
+            paginaEmAndamentoId = dao.inserirPaginaCurtida(conta.getEmail(), pagina.getUrl());
+        }
+        return paginaEmAndamentoId;
+    }
+
+    private int recuperarPaginaEmAndamentoEReordenarPaginas(ContaFacebook conta) {
+        PaginaCurtidaDto paginaEmAndamento = dao.selecionarPaginaCurtidaEmAndamento(conta.getEmail());
+        paginas = conta.getPaginas();
+        if (paginaEmAndamento != null) {
+            paginas = reordenarPaginas(conta.getPaginas(), paginaEmAndamento.getUrl());
+            return paginaEmAndamento.getId();
+        }
+        return 0;
+    }
+
+    private List<Pagina> reordenarPaginas(List<Pagina> paginas, String urlPrimeiraPagina) {
         List<Pagina> primeiras = new ArrayList<>();
         List<Pagina> ultimas = new ArrayList<>();
         boolean encontrouPrimeira = false;
@@ -57,12 +79,12 @@ public class Curtidor implements ICommons {
                 ultimas.add(pagina);
             }
         }
-        System.out.println("DEPOIS");
         primeiras.addAll(ultimas);
         return primeiras;
     }
 
-    private void inicializarVariaveis() {
+    private void inicializarVariaveis(Pagina pagina) {
+        paginaAtual = pagina;
         indexAtual = 0;
         posicaoAtual = 1;
         posicaoAnterior = 0;

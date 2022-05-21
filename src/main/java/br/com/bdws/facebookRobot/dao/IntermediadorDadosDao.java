@@ -34,8 +34,8 @@ public class IntermediadorDadosDao implements ICommons {
         return 0;
     }
 
-    public void updatePaginaCurtida(int id, int curtidas, int parardecurtir) {
-        String sql = "UPDATE paginacurtida SET curtidas = ?, parardecurtir = ? WHERE Id = ?";
+    public void finalizarPaginaCurtida(int id, int curtidas, int parardecurtir) {
+        String sql = "UPDATE paginacurtida SET finalizado = 1, curtidas = ?, parardecurtir = ? WHERE Id = ?";
         try {
             PreparedStatement ps = getSqliteConnection().prepareStatement(sql);
             ps.setInt(1, curtidas);
@@ -48,7 +48,7 @@ public class IntermediadorDadosDao implements ICommons {
     }
 
     public PaginaCurtidaDto selecionarPaginaCurtidaEmAndamento(String email) {
-        String sql = "SELECT id, url FROM paginacurtida where email = ? and curtidas is null order by id desc limit 1";
+        String sql = "SELECT id, url FROM paginacurtida where email = ? and finalizado = 0 order by id desc limit 1";
         try {
             PreparedStatement ps = getSqliteConnection().prepareStatement(sql);
             ps.setString(1, email);
@@ -70,7 +70,8 @@ public class IntermediadorDadosDao implements ICommons {
                 " email text NOT NULL,",
                 " url text NOT NULL,",
                 " curtidas INTEGER,",
-                " parardecurtir INTEGER)");
+                " parardecurtir INTEGER,",
+                " finalizado INTEGER default 0)");
         try {
             Statement stmt = getSqliteConnection().createStatement();
             stmt.execute(createPaginaCurtida);
