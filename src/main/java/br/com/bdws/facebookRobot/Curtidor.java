@@ -13,7 +13,6 @@ import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,9 +35,7 @@ public class Curtidor implements ICommons {
     public void start(ContaFacebook conta) {
         int paginaEmAndamentoId = recuperarPaginaEmAndamentoEReordenarPaginas(conta);
         for (Pagina pagina : paginas) {
-            if (!continuarRobo()) {
-                break;
-            }
+            if (!continuarRobo()) break;
             paginaEmAndamentoId = inserirSeNaoForPaginaEmAndamento(conta, paginaEmAndamentoId, pagina);
             inicializarVariaveis(pagina);
             entrarNaPagina();
@@ -59,28 +56,10 @@ public class Curtidor implements ICommons {
         PaginaCurtidaDto paginaEmAndamento = dao.selecionarPaginaCurtidaEmAndamento(conta.getEmail());
         paginas = conta.getPaginas();
         if (paginaEmAndamento != null) {
-            paginas = reordenarPaginas(conta.getPaginas(), paginaEmAndamento.getUrl());
+            paginas = conta.getPaginasReordenadas(paginaEmAndamento.getUrl());
             return paginaEmAndamento.getId();
         }
         return 0;
-    }
-
-    private List<Pagina> reordenarPaginas(List<Pagina> paginas, String urlPrimeiraPagina) {
-        List<Pagina> primeiras = new ArrayList<>();
-        List<Pagina> ultimas = new ArrayList<>();
-        boolean encontrouPrimeira = false;
-        for (Pagina pagina : paginas) {
-            if (!encontrouPrimeira && urlPrimeiraPagina.equalsIgnoreCase(pagina.getUrl())) {
-                encontrouPrimeira = true;
-            }
-            if (encontrouPrimeira) {
-                primeiras.add(pagina);
-            } else {
-                ultimas.add(pagina);
-            }
-        }
-        primeiras.addAll(ultimas);
-        return primeiras;
     }
 
     private void inicializarVariaveis(Pagina pagina) {

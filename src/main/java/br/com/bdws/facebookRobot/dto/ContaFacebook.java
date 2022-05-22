@@ -1,5 +1,6 @@
 package br.com.bdws.facebookRobot.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContaFacebook {
@@ -30,5 +31,23 @@ public class ContaFacebook {
 
     public void setPaginas(List<Pagina> paginas) {
         this.paginas = paginas;
+    }
+
+    public List<Pagina> getPaginasReordenadas(String urlPrimeiraPagina) {
+        List<Pagina> primeiras = new ArrayList<>();
+        List<Pagina> ultimas = new ArrayList<>();
+        boolean encontrouPrimeira = false;
+        for (Pagina pagina : paginas) {
+            if (!encontrouPrimeira && urlPrimeiraPagina.equalsIgnoreCase(pagina.getUrl())) {
+                encontrouPrimeira = true;
+            }
+            if (encontrouPrimeira) {
+                primeiras.add(pagina);
+            } else {
+                ultimas.add(pagina);
+            }
+        }
+        primeiras.addAll(ultimas);
+        return primeiras;
     }
 }
