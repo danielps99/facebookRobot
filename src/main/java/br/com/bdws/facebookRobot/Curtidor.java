@@ -31,35 +31,33 @@ public class Curtidor implements ICommons {
     private int contadorExceptions = 0;
     private int contadorCurtidas;
     private List<Pagina> paginas;
+    private int paginaEmAndamentoId = 0;
 
     public void start(ContaFacebook conta) {
-        int paginaEmAndamentoId = recuperarPaginaEmAndamentoEReordenarPaginas(conta);
+        recuperarPaginaEmAndamentoEReordenarPaginas(conta);
         for (Pagina pagina : paginas) {
             if (!continuarRobo()) break;
-            paginaEmAndamentoId = inserirSeNaoForPaginaEmAndamento(conta, paginaEmAndamentoId, pagina);
+            inserirSeNaoForPaginaEmAndamentoRecuperada(conta, pagina);
             inicializarVariaveis(pagina);
             entrarNaPagina();
             percorrerPublicacoesECurtir();
-            dao.finalizarPaginaCurtida(paginaEmAndamentoId, contadorCurtidas, contadorPararDeCurtir);
-            paginaEmAndamentoId = 0;
+            finalizarSeForContinuarRoboEZerarPaginaEmAndamentoId();
         }
     }
 
-    private int inserirSeNaoForPaginaEmAndamento(ContaFacebook conta, int paginaEmAndamentoId, Pagina pagina) {
+    private void inserirSeNaoForPaginaEmAndamentoRecuperada(ContaFacebook conta, Pagina pagina) {
         if (paginaEmAndamentoId == 0) {
             paginaEmAndamentoId = dao.inserirPaginaCurtida(conta.getEmail(), pagina.getUrl());
         }
-        return paginaEmAndamentoId;
     }
 
-    private int recuperarPaginaEmAndamentoEReordenarPaginas(ContaFacebook conta) {
+    private void recuperarPaginaEmAndamentoEReordenarPaginas(ContaFacebook conta) {
         PaginaCurtidaDto paginaEmAndamento = dao.selecionarPaginaCurtidaEmAndamento(conta.getEmail());
         paginas = conta.getPaginas();
         if (paginaEmAndamento != null) {
             paginas = conta.getPaginasReordenadas(paginaEmAndamento.getUrl());
-            return paginaEmAndamento.getId();
+            paginaEmAndamentoId = paginaEmAndamento.getId();
         }
-        return 0;
     }
 
     private void inicializarVariaveis(Pagina pagina) {
@@ -91,6 +89,13 @@ public class Curtidor implements ICommons {
             indexAtual++;
             percorrerPublicacoesECurtir();
         }
+    }
+
+    private void finalizarSeForContinuarRoboEZerarPaginaEmAndamentoId() {
+        if (continuarRobo()) {
+            dao.finalizarPaginaCurtida(paginaEmAndamentoId, contadorCurtidas, contadorPararDeCurtir);
+        }
+        paginaEmAndamentoId = 0;
     }
 
     private boolean continuarRobo() {
