@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class Curtidor implements ICommons {
 
-    private final String userHomeFolder = getUserHomeFolder();
+    private final String userHomeFolder = getRoboExecucaoFolder();
     private DriverService driverService = DriverService.get();
     private IntermediadorDadosDao dao = new IntermediadorDadosDao();
     private int indexAtual;

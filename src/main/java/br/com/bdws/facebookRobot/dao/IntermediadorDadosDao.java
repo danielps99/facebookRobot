@@ -9,7 +9,7 @@ import java.sql.*;
 
 public class IntermediadorDadosDao implements ICommons {
 
-    private final String caminhoArquivoBanco = getUserHomeFolder().concat("/").concat("facebookRobot.db");
+    private final String caminhoArquivoBanco = getRoboExecucaoFolder().concat("/").concat("facebookRobot.db");
 
     public IntermediadorDadosDao() {
         if (Files.notExists(new File(caminhoArquivoBanco).toPath())) {

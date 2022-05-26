@@ -75,8 +75,8 @@ public interface ICommons {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_HHmmss"));
     }
 
-    public default String getUserHomeFolder() {
-        return System.getProperty("user.home");
+    public default String getRoboExecucaoFolder() {
+        return System.getProperty("user.home").concat("/facebookRobotExecucao");
     }
 
     public default String concat(String... strs) {
