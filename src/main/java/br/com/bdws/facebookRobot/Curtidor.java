@@ -32,26 +32,28 @@ public class Curtidor implements ICommons {
     private int contadorCurtidas;
     private List<Pagina> paginas;
     private int paginaEmAndamentoId = 0;
+    private ContaFacebook conta;
 
-    public void start(ContaFacebook conta) {
-        recuperarPaginaEmAndamentoEReordenarPaginas(conta);
+    public void start(ContaFacebook contaFacebook) {
+        conta = contaFacebook;
+        recuperarPaginaEmAndamentoEReordenarPaginas();
         for (Pagina pagina : paginas) {
             if (!continuarRobo()) break;
-            inserirSeNaoForPaginaEmAndamentoRecuperada(conta, pagina);
             inicializarVariaveis(pagina);
+            inserirSeNaoForPaginaEmAndamentoRecuperada();
             entrarNaPagina();
             percorrerPublicacoesECurtir();
             finalizarSeForContinuarRoboEZerarPaginaEmAndamentoId();
         }
     }
 
-    private void inserirSeNaoForPaginaEmAndamentoRecuperada(ContaFacebook conta, Pagina pagina) {
+    private void inserirSeNaoForPaginaEmAndamentoRecuperada() {
         if (paginaEmAndamentoId == 0) {
-            paginaEmAndamentoId = dao.inserirPaginaCurtida(conta.getEmail(), pagina.getUrl());
+            paginaEmAndamentoId = dao.inserirPaginaCurtida(conta.getEmail(), paginaAtual.getUrl());
         }
     }
 
-    private void recuperarPaginaEmAndamentoEReordenarPaginas(ContaFacebook conta) {
+    private void recuperarPaginaEmAndamentoEReordenarPaginas() {
         PaginaCurtidaDto paginaEmAndamento = dao.selecionarPaginaCurtidaEmAndamento(conta.getEmail());
         paginas = conta.getPaginas();
         if (paginaEmAndamento != null) {
@@ -83,7 +85,7 @@ public class Curtidor implements ICommons {
         } catch (Exception e) {
             errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
             contadorExceptions++;
-            tirarPrintScreen(concat(userHomeFolder, "/Curtidor/exception/", getDiaHoraMinutoSegundo(), ".png"));
+            tirarPrintScreen(concat(userHomeFolder, "/Curtidor/", conta.getEmailComoPasta(), "/exception/", getDiaHoraMinutoSegundo(), ".png"));
         }
         if (contadorPararDeCurtir < 10 && continuarRobo() && contadorCurtidas < 50) {
             indexAtual++;
@@ -195,8 +197,8 @@ public class Curtidor implements ICommons {
     }
 
     private String getNomeArquivoScreenshot() {
-        return concat(userHomeFolder, "/Curtidor/", getDiaHoraMinutoSegundo(), "_",
-                getSomenteLetrasENumeros(paginaAtual.getNome()), "_", indexAtual, "_", posicaoAtual, ".png");
+        return concat(userHomeFolder, "/Curtidor/", conta.getEmailComoPasta(), "/", paginaAtual.getUrlComoPasta(),
+                "/", getDiaHoraMinutoSegundo(), "_", getSomenteLetrasENumeros(paginaAtual.getNome()), "_", indexAtual, "_", posicaoAtual, ".png");
     }
 
     private StringBuilder getInicioLinhaPublicacao() {

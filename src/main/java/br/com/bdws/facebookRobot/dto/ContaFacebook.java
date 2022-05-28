@@ -50,4 +50,8 @@ public class ContaFacebook {
         primeiras.addAll(ultimas);
         return primeiras;
     }
+
+    public String getEmailComoPasta() {
+        return email.replaceAll("\\W", "_");
+    }
 }

@@ -45,4 +45,8 @@ public class Pagina {
     public String toString() {
         return "Página: ".concat(nome).concat(" - ").concat(url);
     }
+
+    public String getUrlComoPasta() {
+        return url.replaceAll("(.)*[/]", "");
+    }
 }
