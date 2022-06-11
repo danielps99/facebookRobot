@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class Curtidor implements ICommons {
 
     private DriverService driverService = DriverService.get();
-    private IntermediadorDadosDao dao = new IntermediadorDadosDao();
+    private IntermediadorDadosDao dao;
     private int indexAtual;
     private Pagina paginaAtual;
     private Integer posicaoAtual;
@@ -30,6 +30,7 @@ public class Curtidor implements ICommons {
 
     public void start(ContaFacebook contaFacebook) {
         conta = contaFacebook;
+        dao = IntermediadorDadosDao.get(conta.getEmailComoPasta());
         recuperarPaginaEmAndamentoEReordenarPaginas();
         for (Pagina pagina : paginas) {
             if (!continuarRobo()) break;

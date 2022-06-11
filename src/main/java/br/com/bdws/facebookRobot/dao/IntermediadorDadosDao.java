@@ -9,9 +9,18 @@ import java.sql.*;
 
 public class IntermediadorDadosDao implements ICommons {
 
-    private final String caminhoArquivoBanco = roboRootFolder.concat("/").concat("facebookRobot.db");
+    private static String caminhoArquivoBanco;
+    private static IntermediadorDadosDao single;
 
-    public IntermediadorDadosDao() {
+    public static IntermediadorDadosDao get(String nomeArquivoDb) {
+        if (single == null) {
+            single = new IntermediadorDadosDao(nomeArquivoDb);
+        }
+        return single;
+    }
+
+    private IntermediadorDadosDao(String nomeArquivoDb) {
+        caminhoArquivoBanco = roboRootFolder.concat("/sqlite/").concat(nomeArquivoDb).concat(".db");
         if (Files.notExists(new File(caminhoArquivoBanco).toPath())) {
             criarTabelas();
         }
