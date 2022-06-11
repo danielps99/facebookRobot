@@ -1,11 +1,17 @@
 package br.com.bdws.facebookRobot;
 
 import com.google.common.base.Strings;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -17,6 +23,7 @@ public interface ICommons {
 
     final static Random random = new Random();
     public static final Logger logger = LoggerFactory.getLogger(ICommons.class);
+    public static final String roboRootFolder = getRoboExecucaoFolder();
 
     public default void sleep(Integer multiplicador) {
         try {
@@ -75,7 +82,7 @@ public interface ICommons {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_HHmmss"));
     }
 
-    public default String getRoboExecucaoFolder() {
+    public static String getRoboExecucaoFolder() {
         return System.getProperty("user.home").concat("/facebookRobotExecucao");
     }
 
@@ -95,5 +102,14 @@ public interface ICommons {
         StringBuilder sb = new StringBuilder();
         Arrays.stream(args).forEach(a -> sb.append(a));
         return sb;
+    }
+
+    public default void tirarPrintScreen(ChromeDriver driver, String pathAndNomeArquivo) {
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(scrFile, new File(pathAndNomeArquivo));
+        } catch (IOException e) {
+            errorComMensagem(e, "takesScreenshot");
+        }
     }
 }

@@ -5,21 +5,15 @@ import br.com.bdws.facebookRobot.dto.ContaFacebook;
 import br.com.bdws.facebookRobot.dto.Pagina;
 import br.com.bdws.facebookRobot.dto.PaginaCurtidaDto;
 import br.com.bdws.facebookRobot.service.DriverService;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Curtidor implements ICommons {
 
-    private final String userHomeFolder = getRoboExecucaoFolder();
     private DriverService driverService = DriverService.get();
     private IntermediadorDadosDao dao = new IntermediadorDadosDao();
     private int indexAtual;
@@ -85,7 +79,8 @@ public class Curtidor implements ICommons {
         } catch (Exception e) {
             errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
             contadorExceptions++;
-            tirarPrintScreen(concat(userHomeFolder, "/Curtidor/", conta.getEmailComoPasta(), "/exception/", getDiaHoraMinutoSegundo(), ".png"));
+            String pathFile = concat(roboRootFolder, "/Curtidor/", conta.getEmailComoPasta(), "/exception/", getDiaHoraMinutoSegundo(), ".png");
+            tirarPrintScreen(driverService.getDriver(), pathFile);
         }
         if (contadorPararDeCurtir < 10 && continuarRobo() && contadorCurtidas < 50) {
             indexAtual++;
@@ -116,21 +111,12 @@ public class Curtidor implements ICommons {
         if (curtirBtn != null) {
             driverService.waitUntilBeClickable(curtirBtn);
             curtirBtn.click();
-            tirarPrintScreen(getNomeArquivoScreenshot());
+            tirarPrintScreen(driverService.getDriver(), getNomeArquivoScreenshot());
             contadorCurtidas++;
             return true;
         }
         contadorPararDeCurtir++;
         return false;
-    }
-
-    private void tirarPrintScreen(String pathAndNomeArquivo) {
-        File scrFile = ((TakesScreenshot) driverService.getDriver()).getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(scrFile, new File(pathAndNomeArquivo));
-        } catch (IOException e) {
-            errorComMensagem(e, "takesScreenshot");
-        }
     }
 
     public WebElement getBtnCurtir() {
@@ -197,7 +183,7 @@ public class Curtidor implements ICommons {
     }
 
     private String getNomeArquivoScreenshot() {
-        return concat(userHomeFolder, "/Curtidor/", conta.getEmailComoPasta(), "/", paginaAtual.getUrlComoPasta(),
+        return concat(roboRootFolder, "/Curtidor/", conta.getEmailComoPasta(), "/", paginaAtual.getUrlComoPasta(),
                 "/", getDiaHoraMinutoSegundo(), "_", getSomenteLetrasENumeros(paginaAtual.getNome()), "_", indexAtual, "_", posicaoAtual, ".png");
     }
 
