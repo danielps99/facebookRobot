@@ -3,6 +3,7 @@ package br.com.bdws.facebookRobot;
 import com.google.common.base.Strings;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
@@ -111,5 +112,15 @@ public interface ICommons {
         } catch (IOException e) {
             errorComMensagem(e, "takesScreenshot");
         }
+    }
+
+    public default WebElement buscarElementoPorTagETexto(ChromeDriver driver, String tag, String texto) {
+        String xpath = concat("//", tag == null ? "*" : tag, "[contains(text(), '", texto, "')]");
+        return driver.findElement(By.xpath(xpath));
+    }
+
+    public default WebElement buscarElementoPorTagEAriaLabel(ChromeDriver driver, String tag, String ariaLabel) {
+        String xpath = concat("//", tag == null ? "*" : tag, "[@aria-label='", ariaLabel, "']");
+        return driver.findElement(By.xpath(xpath));
     }
 }

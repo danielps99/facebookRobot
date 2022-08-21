@@ -25,8 +25,11 @@ public class App implements ICommons {
     }
 
     private void decidirCurtirOuCompartilhar(ContaFacebook conta) {
-        if (conta.getPaginas() != null) {
+        if (conta.getPaginas() != null && !conta.getPaginas().isEmpty()) {
             new Curtidor().start(conta);
+        }
+        if (conta.getCompartilhavel() != null) {
+            new Compartilhador().start(conta);
         }
     }
 

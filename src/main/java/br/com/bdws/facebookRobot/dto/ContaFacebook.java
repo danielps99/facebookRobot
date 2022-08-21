@@ -8,6 +8,7 @@ public class ContaFacebook {
     private String email;
     private String passwd;
     private List<Pagina> paginas;
+    private Compartilhavel compartilhavel;
 
     public String getEmail() {
         return email;
@@ -31,6 +32,14 @@ public class ContaFacebook {
 
     public void setPaginas(List<Pagina> paginas) {
         this.paginas = paginas;
+    }
+
+    public Compartilhavel getCompartilhavel() {
+        return compartilhavel;
+    }
+
+    public void setCompartilhavel(Compartilhavel compartilhavel) {
+        this.compartilhavel = compartilhavel;
     }
 
     public List<Pagina> getPaginasReordenadas(String urlPrimeiraPagina) {
