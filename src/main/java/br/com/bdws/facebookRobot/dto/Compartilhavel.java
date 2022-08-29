@@ -6,6 +6,7 @@ public class Compartilhavel {
 
     private String url;
     private Boolean incluirPubOriginal;
+    private String textoPublicacao;
     private String compartilharComo;
     private HashSet<String> nomesGrupos;
 
@@ -23,6 +24,14 @@ public class Compartilhavel {
 
     public void setIncluirPubOriginal(Boolean incluirPubOriginal) {
         this.incluirPubOriginal = incluirPubOriginal;
+    }
+
+    public String getTextoPublicacao() {
+        return textoPublicacao;
+    }
+
+    public void setTextoPublicacao(String textoPublicacao) {
+        this.textoPublicacao = textoPublicacao;
     }
 
     public HashSet<String> getNomesGrupos() {

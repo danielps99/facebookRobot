@@ -5,6 +5,7 @@
 - Percorre grupos e páginas do facebook e curti postagens.
 - Salva logs e tira screenshot das publicações curtidas.
 - Salva localmente a quantidade de curtidas em banco sqlite.
+- Compartilha uma publicação específica em vários grupos pré-definidos
 
 ### Parametros:
 
@@ -21,7 +22,7 @@ Recebe dois parâmetros:
 - Segundo parâmetro é um arquivo json obrigatório, caso seja omitido no comando, abrirá um popup pedindo o arquivo.json.
   Veja sessão Modelo de arquivo json
 
-### Modelo de arquivo json:
+### Modelo de arquivo json para curtir:
 
 - Descrição das chaves do json:
     - email: E-mail da conta do facebook.
@@ -57,6 +58,36 @@ Recebe dois parâmetros:
 }
 ```
 
+### Modelo de arquivo json para compartilhar:
+
+- Descrição das chaves do json:
+    - email: E-mail da conta do facebook.
+    - passwd: Senha da conta do facebook, senha em texto aberto.
+    - compartilhavel: Objeto que define o que será compartilhado e em quais grupos será compartilhado.
+        - url: Url permanente da publicação que será compartilhado.
+        - incluirPubOriginal: Indica se é para checar a opção incluir publicação original.
+        - textoPublicacao: Nem sempre é possível incluir publicação original, este texto será usado quando não for
+          possível incluir publicação original.
+        - compartilharComo: Nome do usuário ou da página que será compartilhado como.
+        - nomesGrupos: Array com os nomes dos grupos que a publicação será compartilhada.
+
+```
+{
+    "email": "contafacebook@mail.com",
+    "passwd": "senhaDaContaEmTextoAbertoMesmo",
+    "compartilhavel": {
+        "url": "https://www.facebook.com/story.php?story_fbid=123456789012345&id=987654321098765",
+        "incluirPubOriginal": true,
+        "textoPublicacao": "Homem-Aranha Verde feito com o Krita!!!",
+        "compartilharComo": "NomeUsuarioOuPagina",
+        "nomesGrupos": [
+            "Nome do grupo 1",
+            "Nome do grupo 2"
+        ]
+    }
+}
+```
+
 ### Como usar:
 
 #### Para compilar o arquivo jar:
@@ -80,7 +111,3 @@ java -jar facebookRobot-1.0-SNAPSHOT-jar-with-dependencies.jar SOMENTE_LOGAR con
 ```
 java -jar facebookRobot-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-
-### Futuras funcionalidades do robo:
-
-- Compartilhar postagem em grupos do facebook.
