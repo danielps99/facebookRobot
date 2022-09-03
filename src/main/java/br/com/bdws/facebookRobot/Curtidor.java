@@ -32,7 +32,8 @@ public class Curtidor implements ICommons {
         conta = contaFacebook;
         dao = IntermediadorDadosDao.get(conta.getEmailComoPasta());
         recuperarPaginaEmAndamentoEReordenarPaginas();
-        for (Pagina pagina : paginas) {
+        imprimirStrings("curtir", paginas.stream().map(o -> o.toString()).collect(Collectors.toList()));
+        for (Pagina pagina : this.paginas) {
             if (!continuarRobo()) break;
             inicializarVariaveis(pagina);
             inserirSeNaoForPaginaEmAndamentoRecuperada();

@@ -125,7 +125,7 @@ public interface ICommons {
         return driver.findElement(By.xpath(xpath));
     }
 
-    public default void imprirStrings(String titulo, Collection<String> strings) {
+    public default void imprimirStrings(String titulo, Collection<String> strings) {
         info(concat("---------------------------------- INICIO ", titulo, " INICIO ----------------------------------"));
         info("Quantidade: " + strings.size());
         strings.stream().forEach(this::info);

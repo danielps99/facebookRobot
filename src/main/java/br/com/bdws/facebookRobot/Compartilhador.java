@@ -16,7 +16,7 @@ public class Compartilhador implements ICommons {
     public void start(ContaFacebook contaFacebook) {
         conta = contaFacebook;
         compartilhavel = conta.getCompartilhavel();
-        imprirStrings("", compartilhavel.getNomesGrupos());
+        imprimirStrings("compartilhar", compartilhavel.getNomesGrupos());
         for (String nomeGrupo : compartilhavel.getNomesGrupos()) {
             irParaUrlCompartilhavel();
             compartilhar(nomeGrupo);
