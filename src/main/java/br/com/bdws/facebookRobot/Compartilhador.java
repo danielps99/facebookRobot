@@ -28,22 +28,23 @@ public class Compartilhador implements ICommons {
     }
 
     private void compartilhar(String nomeGrupo) {
-        buscarElementoPorTagEAriaLabel(driver, "div", "Envie isso para amigos ou publique na sua linha do tempo").click();
-        sleep(5);
-
-        buscarElementoPorTagETexto(driver, "span", "Compartilhar em um grupo").click();
-        sleep(5);
-
-        buscarElementoPorTagEAriaLabel(driver, "label", "Compartilhar como").click();
-        sleep(5);
-
-        buscarElementoPorTagETexto(driver, "span", compartilhavel.getCompartilharComo()).click();
-
-        pesquisarESelecionarGrupo(nomeGrupo);
-
-        SelecionarIncluirPublicacaoOriginalOuEscreverPublicacao();
-
         try {
+            buscarElementoPorTagEAriaLabel(driver, "div", "Envie isso para amigos ou publique na sua linha do tempo").click();
+            sleep(5);
+
+            buscarElementoPorTagETexto(driver, "span", "Compartilhar em um grupo").click();
+            sleep(5);
+
+            buscarElementoPorTagEAriaLabel(driver, "label", "Compartilhar como").click();
+            sleep(5);
+
+            buscarElementoPorTagETexto(driver, "span", compartilhavel.getCompartilharComo()).click();
+
+            pesquisarESelecionarGrupo(nomeGrupo);
+
+            SelecionarIncluirPublicacaoOriginalOuEscreverPublicacao();
+
+
             buscarElementoPorTagEAriaLabel(driver, "div", "Publicar").click();
             info("COMPARTILHOU CORRETAMENTE: " + nomeGrupo);
         } catch (Exception e) {
