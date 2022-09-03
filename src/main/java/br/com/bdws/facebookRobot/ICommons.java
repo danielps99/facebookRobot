@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
 
 import static java.lang.System.lineSeparator;
@@ -122,5 +123,12 @@ public interface ICommons {
     public default WebElement buscarElementoPorTagEAriaLabel(ChromeDriver driver, String tag, String ariaLabel) {
         String xpath = concat("//", tag == null ? "*" : tag, "[@aria-label='", ariaLabel, "']");
         return driver.findElement(By.xpath(xpath));
+    }
+
+    public default void imprirStrings(String titulo, Collection<String> strings) {
+        info(concat("---------------------------------- INICIO ", titulo, " INICIO ----------------------------------"));
+        info("Quantidade: " + strings.size());
+        strings.stream().forEach(this::info);
+        info(concat("------------------------------------- FIM ", titulo, " FIM -------------------------------------"));
     }
 }

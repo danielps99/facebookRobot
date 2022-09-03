@@ -16,6 +16,7 @@ public class Compartilhador implements ICommons {
     public void start(ContaFacebook contaFacebook) {
         conta = contaFacebook;
         compartilhavel = conta.getCompartilhavel();
+        imprirStrings("", compartilhavel.getNomesGrupos());
         for (String nomeGrupo : compartilhavel.getNomesGrupos()) {
             irParaUrlCompartilhavel();
             compartilhar(nomeGrupo);
@@ -41,10 +42,13 @@ public class Compartilhador implements ICommons {
             buscarElementoPorTagETexto(driver, "span", compartilhavel.getCompartilharComo()).click();
 
             pesquisarESelecionarGrupo(nomeGrupo);
+        } catch (Exception e) {
+            //Preferi não fazer nada aqui, na próxima exception trato
+        }
 
-            SelecionarIncluirPublicacaoOriginalOuEscreverPublicacao();
+        SelecionarIncluirPublicacaoOriginalOuEscreverPublicacao();
 
-
+        try {
             buscarElementoPorTagEAriaLabel(driver, "div", "Publicar").click();
             info("COMPARTILHOU CORRETAMENTE: " + nomeGrupo);
         } catch (Exception e) {
@@ -57,11 +61,15 @@ public class Compartilhador implements ICommons {
 
     private void SelecionarIncluirPublicacaoOriginalOuEscreverPublicacao() {
         try {
-            buscarElementoPorTagETexto(driver, "label", "Incluir publicação original").click();
+            buscarElementoPorTagETexto(driver, "span", "Incluir publicação original").click();
             sleep(5);
         } catch (NoSuchElementException e) {
-            digitar(buscarElementoPorTagEAriaLabel(driver, "div", "Crie uma publicação aberta…"), compartilhavel.getTextoPublicacao());
-            sleep(2);
+            try {
+                digitar(buscarElementoPorTagEAriaLabel(driver, "div", "Crie uma publicação aberta…"), compartilhavel.getTextoPublicacao());
+                sleep(2);
+            } catch (Exception ex) {
+                //Preferi não fazer nada aqui, na próxima exception trato
+            }
         }
     }
 
