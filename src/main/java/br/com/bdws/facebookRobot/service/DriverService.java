@@ -33,6 +33,7 @@ public class DriverService {
         prefs.put("profile.default_content_setting_values.notifications", 2);
         options = new ChromeOptions();
         options.setExperimentalOption("prefs", prefs);
+        options.addArguments("disable-popup-blocking");
         if (Comando.EXECUTAR_NAVEGADOR_FECHADO.equals(comando)) {
             options.addArguments("headless");
         }
