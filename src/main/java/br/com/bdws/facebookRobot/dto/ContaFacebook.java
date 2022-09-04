@@ -9,6 +9,7 @@ public class ContaFacebook {
     private String passwd;
     private List<Pagina> paginas;
     private Compartilhavel compartilhavel;
+    private String vasculharGruposXpath;
 
     public String getEmail() {
         return email;
@@ -40,6 +41,14 @@ public class ContaFacebook {
 
     public void setCompartilhavel(Compartilhavel compartilhavel) {
         this.compartilhavel = compartilhavel;
+    }
+
+    public String getVasculharGruposXpath() {
+        return vasculharGruposXpath;
+    }
+
+    public void setVasculharGruposXpath(String vasculharGruposXpath) {
+        this.vasculharGruposXpath = vasculharGruposXpath;
     }
 
     public List<Pagina> getPaginasReordenadas(String urlPrimeiraPagina) {

@@ -20,16 +20,19 @@ public class App implements ICommons {
         driverService.configurarDriver(comando);
         logar(contaFacebook);
         if (!Comando.SOMENTE_LOGAR.equals(comando)) {
-            decidirCurtirOuCompartilhar(contaFacebook);
+            decidirAcao(contaFacebook);
         }
     }
 
-    private void decidirCurtirOuCompartilhar(ContaFacebook conta) {
+    private void decidirAcao(ContaFacebook conta) {
         if (conta.getPaginas() != null && !conta.getPaginas().isEmpty()) {
             new Curtidor().start(conta);
         }
         if (conta.getCompartilhavel() != null) {
             new Compartilhador().start(conta);
+        }
+        if (conta.getVasculharGruposXpath() != null) {
+            new Vasculhador().start(conta);
         }
     }
 

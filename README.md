@@ -5,7 +5,8 @@
 - Percorre grupos e páginas do facebook e curti postagens.
 - Salva logs e tira screenshot das publicações curtidas.
 - Salva localmente a quantidade de curtidas em banco sqlite.
-- Compartilha uma publicação específica em vários grupos pré-definidos
+- Compartilha uma publicação específica em vários grupos pré-definidos.
+- Vasculha nome e url de grupos que o usuário participa.
 
 ### Parametros:
 
@@ -30,9 +31,9 @@ Recebe dois parâmetros:
     - paginas: Lista de objetos que indicam a página ou grupo que será percorrido.
         - nome: Nome da página ou grupo. Utilizado apenas em logs informativos.
         - url: Url da página ou grupo do facebook.
-        - publicacoesXpath: É o identificador utilizado para selecionar as publicações na árvore dom da página facebook.
-          Hoje a xpath de exemplo funciona. Mas o facebook atualiza o visual da página, provavelmente esse xpath para de
-          funcionar, o que obriga encontrar outro.
+        - publicacoesXpath: É o identificador utilizado para selecionar as publicações na árvore DOM da página facebook.
+          Hoje a xpath de exemplo funciona. Mas o facebook atualiza o visual da página, provavelmente esse xpath deixará
+          de funcionar, o que obriga encontrar outro.
         - naoCurtirPalavras: São palavras excludentes ao decidir curtir a publicação. Sugiro manter as três do exemplo.
           É possível adicionar mais. Por exemplo, em periodo eleitoral pode ser interresante colocar nomes dos
           candidados, caso não queira curtir esse tipo de conteúdo.
@@ -85,6 +86,23 @@ Recebe dois parâmetros:
             "Nome do grupo 2"
         ]
     }
+}
+```
+
+### Modelo de arquivo json para vasculhar nomes de grupos:
+
+- Descrição das chaves do json:
+    - email: E-mail da conta do facebook.
+    - passwd: Senha da conta do facebook, senha em texto aberto.
+    - vasculharGruposXpath: É o identificador utilizado para selecionar os grupos na árvore DOM da página facebook. Hoje
+      a xpath de exemplo funciona. Mas o facebook atualiza o visual da página, provavelmente esse xpath deixará de
+      funcionar, o que obriga encontrar outro.
+
+```
+{
+    "email": "contafacebook@mail.com",
+    "passwd": "senhaDaContaEmTextoAbertoMesmo",
+    "vasculharGruposXpath": "//*[@class=\"qi72231t o9w3sbdw nu7423ey tav9wjvu flwp5yud tghlliq5 gkg15gwv s9ok87oh s9ljgwtm lxqftegz bf1zulr9 frfouenu bonavkto djs4p424 r7bn319e bdao358l fsf7x5fv tgm57n0e jez8cy9q s5oniofx m8h3af8h l7ghb35v kjdc1dyq kmwttqpk dnr7xe2t aeinzg81 srn514ro oxkhqvkx rl78xhln nch0832m om3e55n1 cr00lzj9 rn8ck1ys s3jn8y49 g4tp4svg jl2a5g8c f14ij5to l3ldwz01 icdlwmnq h8391g91 m0cukt09 kpwa50dg ta68dy8c b6ax4al1\"]"
 }
 ```
 
