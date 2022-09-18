@@ -190,8 +190,9 @@ public class Curtidor implements ICommons {
     }
 
     private StringBuilder getInicioLinhaPublicacao() {
-        return concatSb("ATITUDE:", clicou ? "CURTIU" : "PULOU", "_INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual,
-                "_PARARDECURTIR:", contadorPararDeCurtir, " - ");
+        return concatSb(conta.getEmail(), System.lineSeparator(), "ATITUDE:", clicou ? "CURTIU" : "PULOU",
+                "_INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_CURTIDO:", contadorCurtidas, "_PARARDECURTIR:",
+                contadorPararDeCurtir, System.lineSeparator());
     }
 
     private boolean canMostarLinhaPublicacao(String linha) {
