@@ -79,7 +79,7 @@ public class Curtidor implements ICommons {
             validarConteudoECurtir();
             atualizarPosicaoAtual();
         } catch (Exception e) {
-            errorComMensagem(e, concat("INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
+            errorComMensagem(e, concat(conta.getEmail(), System.lineSeparator(), "INDEX:", indexAtual, "_POSIÇÃO:", posicaoAtual, "_PARARDECURTIR:", contadorPararDeCurtir));
             contadorExceptions++;
             String pathFile = concat(roboRootFolder, "/Curtidor/", conta.getEmailComoPasta(), "/exception/", getDiaHoraMinutoSegundo(), ".png");
             tirarPrintScreen(driverService.getDriver(), pathFile);
